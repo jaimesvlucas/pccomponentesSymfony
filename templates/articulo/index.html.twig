@@ -8,8 +8,15 @@
         <div class="precio_articulo">
             {{ articulo.precio }}
         </div>
+        <div>
+            <img class="foto" src="{{ asset('/imagenes/') }}/{{ articulo.foto }}">
+        </div>
+        <div class="boton_comprar">
+            AÑADIR AL CARRITO
+        </div>
     </div>
 {% else %}
     No hay  ningún articulos a la venta.
 {% endfor %}
+<a href="{{ path("insertar_articulo") }}">Insertar articulo</a>
 {% endblock %}

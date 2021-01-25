@@ -3,8 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}PCCOMPONENTES!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-
+        {% block stylesheets %}
+        <link href="{{ asset('css/estilos.css') }}" type="text/css" rel="stylesheet" >
+        {% endblock %}
+        
         {% block javascripts %}{% endblock %}
     </head>
     <body>

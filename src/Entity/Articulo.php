@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ArticuloRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,6 +38,21 @@ class Articulo
      * @ORM\ManyToOne(targetEntity=Categoria::class, inversedBy="articulos")
      */
     private $categoria;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $foto;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Carrito::class, mappedBy="articulos")
+     */
+    private $carritos;
+
+    public function __construct()
+    {
+        $this->carritos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -86,6 +103,45 @@ class Articulo
     public function setCategoria(?Categoria $categoria): self
     {
         $this->categoria = $categoria;
+
+        return $this;
+    }
+
+    public function getFoto(): ?string
+    {
+        return $this->foto;
+    }
+
+    public function setFoto(?string $foto): self
+    {
+        $this->foto = $foto;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Carrito[]
+     */
+    public function getCarritos(): Collection
+    {
+        return $this->carritos;
+    }
+
+    public function addCarrito(Carrito $carrito): self
+    {
+        if (!$this->carritos->contains($carrito)) {
+            $this->carritos[] = $carrito;
+            $carrito->addArticulo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCarrito(Carrito $carrito): self
+    {
+        if ($this->carritos->removeElement($carrito)) {
+            $carrito->removeArticulo($this);
+        }
 
         return $this;
     }
