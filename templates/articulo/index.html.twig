@@ -11,12 +11,15 @@
         <div>
             <img class="foto" src="{{ asset('/imagenes/') }}/{{ articulo.foto }}">
         </div>
-        <div class="boton_comprar">
-            AÑADIR AL CARRITO
-        </div>
+        <a href="{{ path('add_articulo_carrito', {id:articulo.id}) }}" class="boton_comprar">
+           AÑADIR AL CARRITO
+        </a>
     </div>
 {% else %}
     No hay  ningún articulos a la venta.
 {% endfor %}
+<div style="clear:both"></div>
+{% if app.user %}
 <a href="{{ path("insertar_articulo") }}">Insertar articulo</a>
+{% endif %}
 {% endblock %}

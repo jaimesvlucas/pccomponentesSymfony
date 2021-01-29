@@ -11,7 +11,7 @@ use App\Entity\Carrito;
 class CarritoController extends AbstractController
 {
     /**
-     * @Route("/carrito/add/{id_articulo}", name="add_articulo_carrito")
+     * @Route("/carrito/add/{id}", name="add_articulo_carrito")
      */
     public function add_articulo(Articulo $articulo): Response
     {

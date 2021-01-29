@@ -18,17 +18,22 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+
 
 class ArticuloController extends AbstractController
 {
     /**
      * @Route("/", name="inicio")
      */
-    public function index(): Response
+    public function index(AuthenticationUtils $authenticationUtils): Response
     {
+        $error = $authenticationUtils->getLastAuthenticationError();
+        $lastUsername = $authenticationUtils->getLastUsername();
         $repositorio=$this->getDoctrine()->getRepository(Articulo::class);
         $articulos=$repositorio->findAll();
-        return $this->render('articulo/index.html.twig', ['articulos' => $articulos]);
+        return $this->render('articulo/index.html.twig', ['articulos' => $articulos ,'last_username' => $lastUsername, 'error' => $error]);
     }
     /**
      * @Route("/articulo/{id}", name="ver_articulo", requirements={"id"="\d+"})
@@ -42,6 +47,7 @@ class ArticuloController extends AbstractController
     }
     /**
      * @Route("/articulo/insertar", name="insertar_articulo")
+     * @IsGranted("ROLE_USER")
      */
     public function insertar(Request $request, SluggerInterface $slugger): Response{
         $articulo = new Articulo(); 
@@ -50,18 +56,20 @@ class ArticuloController extends AbstractController
                 ->add('descripcion', TextareaType::class)
                 ->add('precio', MoneyType::class)
                 ->add('categoria', EntityType::class, ['class'=> Categoria::class, 'choice_label'=>'nombre'])
-                ->add('foto', FileType::class, ['required' => false,
-                    'constraints' => [
+                /**
+                *
+                 * 'constraints' => [
                     new File([
                         'maxSize' => '1024k',
                         'mimeTypes' => [
-                            'img/jpeg',
-                            'img/png',
-                            'img/gif'
+                            'application/pdf',
+                            'application/x-pdf',
                         ],
-                        'mimeTypesMessage' => 'Please upload a valid img document',
+                        'mimeTypesMessage' => 'Please upload a valid PDF document',
                     ])
-                ]])
+                ]
+                 *                  
+                 */
                 ->add('enviar', SubmitType::class, ['label'=>'Insertar articulo'])
                 ->getForm();
         
